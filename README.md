@@ -6,11 +6,13 @@ made by static recompilation with [N64Recomp](https://github.com/N64Recomp/N64Re
 [rt64](https://github.com/rt64/rt64) and
 [RecompFrontend](https://github.com/N64Recomp/RecompFrontend).
 
-**Status: early bring-up.** The game boots to its title screen, runs at the PAL
-rate of 50 Hz and finds an emulated Controller Pak. Known issue: the PAL picture
-sits too high and is stretched. Sound, controls and saving still need testing.
-Planned: widescreen and high frame rates, quality-of-life and camera options,
-and a mod SDK.
+**Status: early bring-up.** A new game starts and plays with sound, keyboard
+controls and the full-height PAL picture at 50 Hz; an emulated Controller Pak
+is detected. Saving and loading still need testing, and a full playthrough is
+still to come. With the default "Expand" aspect ratio, full-screen 2D
+backgrounds are stretched; choose "Original" in the graphics settings until the
+widescreen patches exist. Planned: widescreen and high frame rates,
+quality-of-life and camera options, and a mod SDK.
 
 You need your own ROM of Holy Magic Century (Europe). This project contains no
 game code or assets. It is not affiliated with the game's developer or
