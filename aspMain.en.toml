@@ -1,7 +1,7 @@
 # RSPRecomp config for the audio microcode of Holy Magic Century (Europe). Run: RSPRecomp aspMain.en.toml
 # The text sits at ROM 0x4C340 (VRAM 0x8004B740, loaded by the audio task setup at 0x80024F20).
 # Same size as the US microcode; the jump-table targets come from Rainchus/Quest64-Recomp (US)
-# and are unverified for this build until audio plays correctly.
+# and work for this build: audio plays correctly in the scenes tested so far.
 text_offset = 0x4C340
 text_size = 0xE20
 text_address = 0x04001080

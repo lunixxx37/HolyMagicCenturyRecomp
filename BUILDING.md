@@ -37,8 +37,10 @@ git clone --recurse-submodules https://github.com/lunixxx37/HolyMagicCenturyReco
 
 ## 3. Generate the C code
 
-Put the ROM in the repository root as `hmc.en.z64` (big-endian; `rom-info
---to-z64` from recomp-toolkit converts the other byte orders), then run:
+Put the ROM in the repository root as `hmc.en.z64` in big-endian byte order.
+Any N64 byte-order converter turns `.n64` and `.v64` files into that form; the
+author uses `rom-info --to-z64` from recomp-toolkit, which is not published yet.
+Then run:
 
 ```sh
 N64Recomp hmc.en.toml
@@ -54,9 +56,19 @@ cmake --preset workspace-release
 cmake --build --preset workspace-release
 ```
 
-The `workspace-*` presets also set `HMC_DIRECTX_HEADERS_DIR` for the author's
-setup and keep a console window open for logs (`HMC_CONSOLE`). The patches in
-`patches/` are compiled for MIPS, recompiled and embedded as part of the build.
+The `workspace-*` presets are the only presets so far:
+
+- They keep a console window open for logs (`HMC_CONSOLE`).
+- They take the DirectX-Headers checkout from
+  `$RECOMP_WORKSPACE/_deps/DirectX-Headers`, the layout of the author's
+  workspace. `RECOMP_WORKSPACE` is set by its devshell.
+  - Without that variable the path leads nowhere. That is harmless with a
+    Windows SDK of 10.0.26100 or newer.
+  - With an older SDK, pass `-DHMC_DIRECTX_HEADERS_DIR=<checkout>` to the
+    configure step.
+
+The patches in `patches/` are compiled for MIPS, recompiled and embedded as part
+of the build.
 
 ## 5. Run
 
