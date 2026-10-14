@@ -1,0 +1,10 @@
+# Data symbols of Holy Magic Century (Europe) for patches and mods.
+# Placeholder: porting the US data symbols is a later step (see the project plan, P7/P8).
+[[section]]
+name = ".main"
+rom = 0x00001050
+vram = 0x80000450
+size = 0x731E0
+
+symbols = [
+]

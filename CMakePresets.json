@@ -1,0 +1,49 @@
+{
+  "version": 6,
+  "configurePresets": [
+    {
+      "name": "windows-base",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/out/build/${presetName}",
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows" },
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang-cl",
+        "CMAKE_CXX_COMPILER": "clang-cl",
+        "CMAKE_CXX_FLAGS": "-Xclang -fexceptions -Xclang -fcxx-exceptions -D__PRFCHWINTRIN_H",
+        "CMAKE_C_FLAGS": "-D__PRFCHWINTRIN_H",
+        "PATCHES_C_COMPILER": "clang",
+        "PATCHES_LD": "ld.lld"
+      }
+    },
+    {
+      "name": "workspace-base",
+      "hidden": true,
+      "description": "The author's D:/Programming/recomp workspace (devshell.ps1 sets RECOMP_WORKSPACE): DirectX-Headers for an older Windows SDK and a console window for logs.",
+      "cacheVariables": {
+        "HMC_RUNTIME_DIR": "${sourceDir}/lib/N64ModernRuntime",
+        "HMC_RT64_DIR": "${sourceDir}/lib/rt64",
+        "HMC_FRONTEND_DIR": "${sourceDir}/lib/RecompFrontend",
+        "HMC_DECOMP_DIR": "${sourceDir}/lib/quest64-decomp",
+        "HMC_DIRECTX_HEADERS_DIR": "$env{RECOMP_WORKSPACE}/_deps/DirectX-Headers",
+        "HMC_CONSOLE": "ON"
+      }
+    },
+    {
+      "name": "workspace-debug",
+      "displayName": "Workspace, Debug",
+      "inherits": [ "windows-base", "workspace-base" ],
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "Debug" }
+    },
+    {
+      "name": "workspace-release",
+      "displayName": "Workspace, Release",
+      "inherits": [ "windows-base", "workspace-base" ],
+      "cacheVariables": { "CMAKE_BUILD_TYPE": "RelWithDebInfo" }
+    }
+  ],
+  "buildPresets": [
+    { "name": "workspace-debug", "configurePreset": "workspace-debug", "targets": [ "HolyMagicCenturyRecompiled" ] },
+    { "name": "workspace-release", "configurePreset": "workspace-release", "targets": [ "HolyMagicCenturyRecompiled" ] }
+  ]
+}

@@ -1,0 +1,25 @@
+# Build output and the local portable run folder (config, saves, ROM copy)
+/out/
+/run/
+/build*/
+/cmake-build*/
+
+# Generated from the ROM by N64Recomp / RSPRecomp. Never commit these.
+/RecompiledFuncs/
+/RecompiledPatches/
+/rsp/*.cpp
+
+# Intermediate files of tools/syms/build_syms.ps1 (RAM images are derived from the ROM)
+/tools/syms/out/
+
+# Patch build output
+/patches/*.o
+/patches/*.d
+/patches/*.elf
+/patches/*.bin
+/patches/*.map
+
+# ROMs
+*.z64
+*.n64
+*.v64

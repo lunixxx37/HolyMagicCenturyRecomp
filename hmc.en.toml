@@ -1,0 +1,27 @@
+# N64Recomp config for Holy Magic Century (Europe), No-Intro SHA1 139607EBA03326FBE9D899663C56E64042D51E84.
+# Paths are relative to this file. Run from the repository root: N64Recomp hmc.en.toml
+
+[input]
+entrypoint = 0x80000400
+rom_file_path = "hmc.en.z64"
+symbols_file_path = "HolyMagicCenturyRecompSyms/hmc.en.syms.toml"
+output_func_path = "RecompiledFuncs"
+
+[patches]
+# Taken over from Rainchus/Quest64-Recomp (us.rev0.toml); the names are the same in this build.
+stubs = [
+    "func_800471B0", # libleo (64DD) leftover
+    "func_8004793C", # libleo (64DD) leftover
+]
+
+# Overlays (title/intro/ending at 0x80100000) are DMA'd by these two functions: tell the
+# runtime which code is loaded so function lookups resolve to the right overlay.
+[[patches.hook]]
+func = "func_80024690"
+text = "load_overlays(ctx->r4, ctx->r5, ctx->r6);"
+before_vram = 0x800246A0
+
+[[patches.hook]]
+func = "dma_write"
+text = "load_overlays(ctx->r4, ctx->r5, ctx->r6);"
+before_vram = 0x80024270

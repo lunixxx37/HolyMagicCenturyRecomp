@@ -1,0 +1,18 @@
+# Manual naming decisions for Holy Magic Century (Germany); same evidence as overrides.en.toml.
+# Note: the German text code in the block around 0x8002E400-0x80031000 (US file 2F1E0.c) changed size
+# function by function, so the US-order port loses the names there. Port E -> DE by code comparison (P10).
+
+[[rename]]
+vram = 0x8003D0A4
+name = "send_mesg"
+reason = "Static helper of libultra exceptasm.s, jal'd from __osException; see overrides.en.toml."
+
+[[rename]]
+vram = 0x8003D470
+name = "osMapTLBRdb"
+reason = "Contains tlbwi and COP0 moves; see overrides.en.toml."
+
+[[rename]]
+vram = 0x80047B50
+name = "osDestroyThread"
+reason = "Calls __osDispatchThread, not __osEnqueueAndYield; see overrides.en.toml."

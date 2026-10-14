@@ -1,0 +1,35 @@
+# Code sections of Holy Magic Century (Germany), No-Intro SHA1 AC5457FFF3FCC8D6ACFFB60FA9A99846D36FACF8.
+# Section names match Quest64Syms (US) so recomp_toolkit.port_funcs can align them.
+#
+# .main ends where the entry code starts clearing BSS (0x800739D0, size 0x24FF0).
+# Overlay bounds come from the ROM start/end table built at 0x80031CC8.
+
+[[section]]
+name = ".entry"
+rom = 0x1000
+vram = 0x80000400
+size = 0x50
+
+[[section]]
+name = ".main"
+rom = 0x1050
+vram = 0x80000450
+size = 0x73580
+
+[[section]]
+name = ".ovl_title"
+rom = 0xD9D6E0
+vram = 0x80100000
+size = 0x1B760
+
+[[section]]
+name = ".ovl_intro"
+rom = 0xDB8E40
+vram = 0x80100000
+size = 0x61860
+
+[[section]]
+name = ".ovl_ending"
+rom = 0xE1A6A0
+vram = 0x80100000
+size = 0x4CB70

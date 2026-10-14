@@ -1,0 +1,35 @@
+# Manual naming decisions for Holy Magic Century (Europe), applied by recomp_toolkit.refine_funcs.
+# Each entry records why the automatic choice (n64sym signature vs. ported US decomp name) was wrong.
+# Names matter: N64Recomp replaces libultra functions by name with N64ModernRuntime implementations.
+
+# The game saves to the Controller Pak. Its own libultra pfs code is recompiled (renamed with a
+# suffix so N64Recomp doesn't swap in runtime stubs); the runtime fork only emulates the pak's
+# block access (__osContRamRead/Write, __osPfsGetStatus, osPfsIsPlug, __osPfsSelectBank).
+[keep_game_copy]
+suffix = "_game"
+names = [
+    "osPfsInitPak", "osPfsFileState", "osPfsFreeBlocks", "osPfsAllocateFile", "osPfsDeleteFile",
+    "osPfsReadWriteFile", "osPfsNumFiles", "osPfsFindFile", "osPfsChecker",
+    "__osGetId", "__osCheckId", "__osCheckPackId", "__osRepairPackId", "__osPfsRWInode",
+    "corrupted_init", "corrupted", # static helpers of osPfsChecker
+]
+
+[[rename]]
+vram = 0x8003D400
+name = "osMapTLBRdb"
+reason = "8 COP0 instructions incl. tlbwi; the US layout has libultra maptlbrdb.s at this spot. Quest64Syms calls it __createSpeedParam."
+
+[[rename]]
+vram = 0x80034AB0
+name = "viMgrMain"
+reason = "Static thread function of libultra vimgr.c, right after osCreateViManager; calls __osViGetCurrentContext, __osViSwapContext and __osTimerInterrupt. Only started by osCreateViManager, which the runtime replaces; N64Recomp ignores it by this name."
+
+[[rename]]
+vram = 0x8003D034
+name = "send_mesg"
+reason = "Static helper of libultra exceptasm.s: jal'd 17 times from __osException with an event index, sits right before __osEnqueueAndYield. N64Recomp ignores it by this name."
+
+[[rename]]
+vram = 0x80047AE0
+name = "osDestroyThread"
+reason = "Calls __osDequeueThread and __osDispatchThread but not __osEnqueueAndYield, which matches osDestroyThread (osStopThread yields). The US layout has destroythread.c here; Quest64Syms calls it osStopThread."
