@@ -521,8 +521,8 @@ int main(int argc, char** argv) {
         fprintf(stderr, "Failed to load controller mappings: %s\n", SDL_GetError());
     }
 
-    // Register fonts.
-    recompui::register_primary_font("InterVariable.ttf", "Inter");
+    // Register fonts. The family has to match the name stored in the font file.
+    recompui::register_primary_font("InterVariable.ttf", "Inter Variable");
 
     // Register configuration path.
     recomp::register_config_path(recompui::file::get_app_folder_path());

@@ -60,8 +60,9 @@ setup and keep a console window open for logs (`HMC_CONSOLE`). The patches in
 
 ## 5. Run
 
-Assets are loaded relative to the working directory. `run.ps1` starts the
-build from `run\`, which needs:
+Assets are loaded relative to the working directory. Double-click
+`Start Holy Magic Century.cmd` (or use `run.ps1`) to start the build from
+`run\`, which needs:
 
 - an empty `portable.txt`, which keeps config, saves and the ROM copy in `run\`,
 - `assets` (a copy or a junction to `..\assets`) and `recompcontrollerdb.txt`.
