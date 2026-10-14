@@ -8,7 +8,7 @@ Status as of 2026-10-14. ✅ done · 🔶 in progress · ⬜ open
 |---|---|---|
 | P0 | Toolchain | ✅ |
 | P1 | ROM verification | ✅ |
-| P2 | Symbols of the PAL build | 🔶 functions done, data open |
+| P2 | Symbols of the PAL build | ✅ |
 | P3 | Recompiler configs | ✅ |
 | P4 | Runtime fork: PAL timing, Controller Pak | 🔶 saving untested |
 | P5 | Project skeleton and first boot | 🔶 save, restart and load untested |
@@ -22,9 +22,9 @@ Status as of 2026-10-14. ✅ done · 🔶 in progress · ⬜ open
 ## Next steps
 
 1. Save at the inn in Melrode, restart and load the save (P4/P5).
-2. Replace the launcher's "NTSC-U version" message for wrong dumps with one
-   that names the European release (P1/P6).
-3. Compare the game speed and audio pitch at 50 Hz with an emulator (P6).
+2. Compare the game speed and audio pitch at 50 Hz with an emulator (P6).
+3. Then either the widescreen fix for full-screen 2D backgrounds (P7) or the
+   mod SDK (P8). The data symbols both need are in place.
 
 ## Phases
 
@@ -44,16 +44,21 @@ Status as of 2026-10-14. ✅ done · 🔶 in progress · ⬜ open
 Open:
 
 - For a wrong dump with the right internal name, the launcher shows
-  RecompFrontend's built-in message, which asks for the NTSC-U version.
+  RecompFrontend's built-in message, which asks for the NTSC-U version. The
+  text is hard-coded in RecompFrontend. That project has no license file and
+  doesn't accept AI-generated contributions, so the fix waits for a way that
+  needs no change there.
 
-### P2: Symbols of the PAL build 🔶
+### P2: Symbols of the PAL build ✅
 
-- ✅ 897 functions in the main segment and the three overlays, ported from the
-  US symbols and checked against libultra signatures and call targets (see
-  [TECHNICAL.md](TECHNICAL.md)).
-- ⬜ Data symbols.
-  - Port the US data names (player data, flags, battle state).
-  - Confirm the gameplay variables with an emulator's RAM watch.
+- 897 functions in the main segment and the three overlays, ported from the US
+  symbols and checked against libultra signatures and call targets.
+- 1506 confirmed data symbols in the main segment plus the overlays' data,
+  ported from the US data symbols. The main-segment symbols are checked
+  against the decomp's C code and n64sym. The ending overlay keeps only
+  confirmed symbols.
+
+Details are in [TECHNICAL.md](TECHNICAL.md).
 
 ### P3: Recompiler configs ✅
 
@@ -129,7 +134,7 @@ Built with the public SDK and switchable in the mod menu:
 
 ### P11: Reusable pipeline 🔶
 
-- ✅ recomp-toolkit has the ROM checks, symbol porting, build comparison and a
-  game session script for tests.
+- ✅ recomp-toolkit has the ROM checks, function and data symbol porting, build
+  comparison and a game session script for tests.
 - ⬜ Publish recomp-toolkit.
 - ⬜ A project template and a "new game" playbook.

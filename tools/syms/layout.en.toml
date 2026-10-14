@@ -2,6 +2,7 @@
 # Section names match Quest64Syms (US) so recomp_toolkit.port_funcs can align them.
 #
 # .main ends where the entry code starts clearing BSS (0x80073630, size 0x239C0).
+# bss_size is that BSS; recomp_toolkit.port_data ports the data symbols in it.
 # Overlay bounds come from the ROM start/end table built at 0x80031C58.
 
 [[section]]
@@ -15,6 +16,7 @@ name = ".main"
 rom = 0x1050
 vram = 0x80000450
 size = 0x731E0
+bss_size = 0x239C0
 
 [[section]]
 name = ".ovl_title"

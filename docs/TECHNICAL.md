@@ -105,10 +105,67 @@ automatically. One example is 0x80035050: n64sym says `guFrustumF`, but the
 function calls `sinf` and `cosf`, so it is `guPositionF`. The build writes each
 decision to `tools/syms/out/refine.en.txt`.
 
-**Data symbols** (`hmc.en.datasyms.toml`) are still a placeholder. Patches and
-mods need named data, such as the player's stats, so porting the US data
-symbols comes with the mod SDK. A first measurement shows the data addresses
-shifted by about +0x340 (data) to +0x7A0 (BSS) relative to the US build.
+## Data symbols
+
+`HolyMagicCenturyRecompSyms/hmc.en.datasyms.toml` names the game's data for
+patches and mods. Examples:
+
+- `gPlayerMainData`: the player's stats,
+- `gCurrentMap`,
+- `gBattleState`,
+- `gInventory`.
+
+recomp-toolkit's `port_data` ported them from the US data symbols of
+Quest64Syms. It is the last step of `tools/syms/build_syms.ps1`.
+
+There is no US ROM to compare code with. However, splat defines a data symbol
+at every address the US code references and at every pointer in the US data.
+The tool finds the same two kinds of references in the PAL build:
+
+- `lui` + `addiu`/load/store pairs in the code,
+- pointers in the data.
+
+It then aligns both sets of addresses with a piecewise-constant shift that
+keeps the data in order.
+
+In the main segment:
+
+- **Confirmed:** 1506 of the 1534 US symbols. The PAL build references the
+  moved address.
+- **Estimates:** 28.
+- **PAL only:** 159 more addresses that only the PAL build references.
+
+The shift is:
+
+- +0x350 or +0x340 in the data,
+- +0x7B0 from the libultra data on,
+- +0x7A0 in the BSS.
+
+The BSS has two stretches of +0x7A8, where the PAL build has 8 more bytes. One
+of them begins right at `gPlayerMainData`, which sits at 0x8007C228.
+
+Two checks back this up:
+
+- **Decomp usage.** Each named symbol that one of the decomp's C functions uses
+  is referenced by the same function in the PAL build (66 of 66). For
+  `gPlayerMainData`, the PAL code's accesses fit the decomp's struct layout
+  field by field, down to the byte-sized elements and levels.
+- **n64sym.** Its libultra data symbols agree in 24 of 26 cases. The other two
+  are wrong matches by n64sym: one lies past the end of the BSS, and the other
+  contradicts its own confirmed neighbours.
+
+Auto-named symbols (`D_…`) that stay unconfirmed are left out. Named ones keep
+their estimated address and are listed in the report
+(`tools/syms/out/data.en.txt`). Two of them, battle messages, were checked by
+hand: the game's text encoding at the estimated addresses reads "Brian escape
+from battle…" and "Brian won the battle!".
+
+The title and intro overlays port well: 50 of 51 and 120 of 124 symbols are
+confirmed. The ending overlay differs from the US one, so only its confirmed
+symbols are written.
+
+A test patch that reads `gPlayerMainData.currHP` compiled to a load from
+0x8007C22C, the verified address plus the field offset.
 
 ## Overlays
 

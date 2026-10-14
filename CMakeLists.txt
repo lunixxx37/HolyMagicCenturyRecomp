@@ -101,7 +101,8 @@ add_custom_command(OUTPUT ${CMAKE_SOURCE_DIR}/RecompiledPatches/patches_bin.c
     DEPENDS ${CMAKE_SOURCE_DIR}/patches/patches.bin
 )
 
-# Recompile the patches ELF into patches.c and patches.bin
+# Recompile the patches ELF into patches.c and patches.bin. The game's symbols resolve the
+# patches' references to game functions and data, so a change to them needs a new run too.
 add_custom_command(OUTPUT
         ${CMAKE_SOURCE_DIR}/patches/patches.bin
         ${CMAKE_SOURCE_DIR}/RecompiledPatches/patches.c
@@ -110,6 +111,9 @@ add_custom_command(OUTPUT
     COMMAND ${N64RECOMP_EXECUTABLE} patches.${HMC_VARIANT}.toml
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
     DEPENDS ${CMAKE_SOURCE_DIR}/patches/patches.elf
+            ${CMAKE_SOURCE_DIR}/patches.${HMC_VARIANT}.toml
+            ${CMAKE_SOURCE_DIR}/HolyMagicCenturyRecompSyms/hmc.${HMC_VARIANT}.syms.toml
+            ${CMAKE_SOURCE_DIR}/HolyMagicCenturyRecompSyms/hmc.${HMC_VARIANT}.datasyms.toml
 )
 
 # Main executable

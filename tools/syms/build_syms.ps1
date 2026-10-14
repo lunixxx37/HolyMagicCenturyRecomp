@@ -1,21 +1,24 @@
 <#
 .SYNOPSIS
-  Rebuilds HolyMagicCenturyRecompSyms\hmc.<version>.syms.toml from the US function list of
-  Rainchus/Quest64Syms.
+  Rebuilds HolyMagicCenturyRecompSyms\hmc.<version>.syms.toml and hmc.<version>.datasyms.toml from
+  the US symbols of Rainchus/Quest64Syms.
 
-      .\tools\syms\build_syms.ps1 [-Version en|de] [-Rom <rom>] [-Quest64Syms <dump.toml>] [-N64Sym <n64sym.exe>]
+      .\tools\syms\build_syms.ps1 [-Version en|de] [-Rom <rom>] [-Quest64Syms <dump.toml>]
+                                 [-Quest64DataSyms <data_dump.toml>] [-N64Sym <n64sym.exe>]
 
   Needs Python with recomp-toolkit installed and n64sym. Without parameters, the paths of the
   author's workspace are used (set by its devshell.ps1 through RECOMP_WORKSPACE).
 
   Steps: RAM image of the main segment -> n64sym libultra signatures -> port the US function list
   (recomp_toolkit.port_funcs) -> refine it with the signatures, call targets and overrides.<version>.toml
-  (recomp_toolkit.refine_funcs). Reports and intermediate files go to tools\syms\out.
+  (recomp_toolkit.refine_funcs) -> port the US data symbols (recomp_toolkit.port_data), checked against
+  n64sym and the decomp's C code. Reports and intermediate files go to tools\syms\out.
 #>
 param(
     [ValidateSet('en', 'de')][string]$Version = 'en',
     [string]$Rom,
     [string]$Quest64Syms,
+    [string]$Quest64DataSyms,
     [string]$N64Sym
 )
 
@@ -26,8 +29,9 @@ if (-not $Rom) {
     $Rom = @{ en = "$ws\_roms\Holy Magic Century (Europe).n64"; de = "$ws\_roms\Holy Magic Century (Germany).n64" }[$Version]
 }
 if (-not $Quest64Syms) { $Quest64Syms = "$ws\_refs\Quest64Syms\dump.toml" }
+if (-not $Quest64DataSyms) { $Quest64DataSyms = "$ws\_refs\Quest64Syms\data_dump.toml" }
 if (-not $N64Sym) { $N64Sym = "$ws\_tools\n64sym\n64sym.exe" }
-foreach ($path in @($Rom, $Quest64Syms, $N64Sym)) {
+foreach ($path in @($Rom, $Quest64Syms, $Quest64DataSyms, $N64Sym)) {
     if (-not (Test-Path -LiteralPath $path)) { throw "Not found: $path (pass it as a parameter)" }
 }
 
@@ -56,7 +60,14 @@ try {
             -o "$repo\HolyMagicCenturyRecompSyms\hmc.$Version.syms.toml" --map "$out\final.$Version.csv" --report "$out\refine.$Version.txt" `
             --comment "Holy Magic Century ($Version) function syms, ported from Rainchus/Quest64Syms (US) by recomp-toolkit (tools/syms/build_syms.ps1)." | Out-Null
     }
+    Invoke-Step 'port_data' {
+        python -I -m recomp_toolkit.port_data $Quest64DataSyms $Quest64Syms "$repo\HolyMagicCenturyRecompSyms\hmc.$Version.syms.toml" $Rom "layout.$Version.toml" `
+            --anchors "$out\n64sym.$Version.txt" --decomp "$repo\lib\quest64-decomp" `
+            -o "$repo\HolyMagicCenturyRecompSyms\hmc.$Version.datasyms.toml" --map "$out\data.$Version.csv" --report "$out\data.$Version.txt" `
+            --comment "Holy Magic Century ($Version) data syms, ported from Rainchus/Quest64Syms (US) by recomp-toolkit (tools/syms/build_syms.ps1)." | Out-Null
+    }
     "wrote $repo\HolyMagicCenturyRecompSyms\hmc.$Version.syms.toml (report: $out\refine.$Version.txt)"
+    "wrote $repo\HolyMagicCenturyRecompSyms\hmc.$Version.datasyms.toml (report: $out\data.$Version.txt)"
 } finally {
     Pop-Location
 }
